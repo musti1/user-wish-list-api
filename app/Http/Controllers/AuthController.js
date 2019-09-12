@@ -15,4 +15,17 @@ AuthController.login = async (req, res) => {
     }
 };
 
+AuthController.signUp = async (req, res) => {
+    try {
+        const { fullName, email, password } = req.body;
+        const user = await AuthService.newUser(fullName, email, password);
+        if(user){
+            return res.json(user);
+        }
+        return res.status(404).json({error: 'Email or Password Incorrect'});
+    }catch {
+        return res.status(500).send({error: 'Email or Password Incorrect'});
+    }
+};
+
 module.exports = AuthController;

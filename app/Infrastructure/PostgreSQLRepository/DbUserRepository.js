@@ -1,7 +1,21 @@
-const postgres = require('../DbConnections/postgreSql');
 const User = require('../../Domain/Core/User');
+const userModel = require('../Models/UserModel');
 
 class DbUserRepository {
+
+    /**
+     *
+     * @param {User} user
+     * @returns {Promise<boolean>}
+     */
+    static async add(user) {
+        try {
+            await userModel.create(user.toStoreObject());
+            return true;
+        } catch (err) {
+            return false;
+        }
+    }
 
     /**
      * Find All User from database
@@ -9,12 +23,12 @@ class DbUserRepository {
      */
     static async findAll() {
         try {
-            const userObjs = await postgres.query('SELECT * FROM users');
-            return userObjs.rows.map((userObj) => {
+            const userObjs = await userModel.findAll({});
+            return userObjs.map((userObj) => {
                 return User.createFromObject(userObj);
             });
-        } catch {
-            throw new Error('Unable to get Users');
+        } catch (e) {
+            throw new Error(e);
         }
     }
 
@@ -26,11 +40,13 @@ class DbUserRepository {
      */
     static async findByEmailAndPass(email, password) {
         try {
-            const userObj = await postgres.query(`SELECT * FROM users WHERE email='${email}' AND password='${password}'`);
-            if(userObj.rows.length > 0){
-                return User.createFromObject(userObj.rows[0]);
-            }
-            return User.createFromObject();
+            const userObj = await userModel.findOne({
+                where: {
+                    email,
+                    password
+                }
+            });
+            return User.createFromObject(userObj);
         } catch {
             return false;
         }
@@ -43,11 +59,12 @@ class DbUserRepository {
      */
     static async findByUserId(userId) {
         try {
-            const userObj = await postgres.query(`SELECT * FROM users WHERE userid='${userId}'`);
-            if(userObj.rows.length > 0){
-                return User.createFromObject(userObj.rows[0]);
-            }
-            return User.createFromObject();
+            const userObj = await userModel.findOne({
+                where: {
+                    userId
+                }
+            });
+            return User.createFromObject(userObj);
         } catch {
             throw new Error();
         }
@@ -60,7 +77,11 @@ class DbUserRepository {
      */
     static async remove(userId) {
         try {
-            await postgres.query(`DELETE FROM users WHERE userid='${userId}'`);
+            await userModel.destroy({
+                where: {
+                    userId
+                }
+            });
             return true
         } catch {
             throw new Error();

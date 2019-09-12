@@ -2,16 +2,16 @@ const uuid = require('uuid/v1');
 
 class WishList {
     constructor(
-        wishlistId,
+        wishListId,
         name,
     ) {
-        this.wishlistid = wishlistId;
+        this.wishListId = wishListId;
         this.name = name;
     }
 
     toStoreObject(){
         return {
-            wishlistId: this.wishlistid,
+            wishListId: this.wishListId,
             name: this.name,
         }
     }
@@ -25,7 +25,7 @@ class WishList {
 
     static createFromObject(userObj) {
         return new WishList(
-            userObj.wishlistid,
+            userObj.wishListId,
             userObj.name,
         );
     }

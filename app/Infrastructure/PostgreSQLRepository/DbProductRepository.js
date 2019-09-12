@@ -1,5 +1,5 @@
-const postgres = require('../DbConnections/postgreSql');
 const Product = require('../../Domain/Core/Product');
+const productModel = require('../Models/ProductModel');
 
 class DbProductRepository {
     /**
@@ -9,8 +9,7 @@ class DbProductRepository {
      */
     static async add(product) {
         try {
-            await postgres.query(`INSERT INTO TABLE_NAME (productid, name, description, quantity) VALUES 
-                            (${product.productid}, ${product.name}, ${product.description}, ${product.quantity});`);
+            await productModel.create(product.toStoreObject());
             return true
         } catch {
             throw new Error('Failed to add product');
@@ -23,8 +22,8 @@ class DbProductRepository {
      */
     static async findAll() {
         try {
-            const productObjs = await postgres.query('SELECT * FROM products');
-            return productObjs.rows.map((productObj) => {
+            const productObjs = await productModel.findAll({});
+            return productObjs.map((productObj) => {
                 return Product.createFromObject(productObj);
             });
         } catch {
@@ -39,8 +38,12 @@ class DbProductRepository {
      */
     static async findByProductId(productId) {
         try {
-            const productObj = await postgres.query(`SELECT * FROM products WHERE productid='${productId}'`);
-            return Product.createFromObject(productObj.rows[0]);
+            const productObj = await productModel.findOne({
+                where: {
+                    productId
+                }
+            });
+            return Product.createFromObject(productObj);
 
         } catch {
             throw new Error();
@@ -54,7 +57,11 @@ class DbProductRepository {
      */
     static async remove(productId) {
         try {
-            await postgres.query(`DELETE FROM products WHERE productid='${productId}'`);
+            await productModel.destroy({
+                where: {
+                    productId
+                }
+            });
             return true
         } catch {
             throw new Error();

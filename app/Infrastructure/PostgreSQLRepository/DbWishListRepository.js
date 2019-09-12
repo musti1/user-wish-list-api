@@ -1,4 +1,4 @@
-const postgres = require('../DbConnections/postgreSql');
+const wishListModel = require('../Models/WishListModel');
 const WishList = require('../../Domain/Core/WishList');
 
 class DbWishListRepository {
@@ -9,8 +9,7 @@ class DbWishListRepository {
      */
     static async add(wishList) {
         try {
-            await postgres.query(`INSERT INTO TABLE_NAME (wishlistid, name) VALUES 
-                            (${wishList.wishlistid}, ${wishList.name});`);
+            await wishListModel.create(wishList.toStoreObject());
             return true
         } catch {
             throw new Error('Failed to add wishlist');
@@ -23,8 +22,8 @@ class DbWishListRepository {
      */
     static async findAll() {
         try {
-            const wishListObjs = await postgres.query('SELECT * FROM wishlists');
-            return wishListObjs.rows.map((wishListObj) => {
+            const wishListObjs = await wishListModel.findAll({});
+            return wishListObjs.map((wishListObj) => {
                 return WishList.createFromObject(wishListObj);
             });
         } catch {
@@ -39,8 +38,8 @@ class DbWishListRepository {
      */
     static async findByWishListId(wishListId) {
         try {
-            const wishListObj = await postgres.query(`SELECT * FROM wishlists WHERE wishlistid='${wishListId}'`);
-            return WishList.createFromObject(wishListObj.rows[0]);
+            const wishListObj = await wishListModel.findOne({where:{wishListId}});
+            return WishList.createFromObject(wishListObj);
 
         } catch {
             throw new Error();
@@ -54,7 +53,7 @@ class DbWishListRepository {
      */
     static async remove(wishListId) {
         try {
-            await postgres.query(`DELETE FROM wishlists WHERE wishlistid='${wishListId}'`);
+            await wishListModel.destroy({where:{wishListId}});
             return true
         } catch {
             throw new Error();

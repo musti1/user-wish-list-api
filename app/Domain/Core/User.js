@@ -3,11 +3,11 @@ const uuid = require('uuid/v1');
 class User {
     constructor(
         userId,
-        fullname,
+        fullName,
         email,
     ) {
         this.userId = userId;
-        this.fullname = fullname;
+        this.fullName = fullName;
         this.email = email;
         this.password = '';
     }
@@ -19,24 +19,24 @@ class User {
     toStoreObject(){
         return {
             userId: this.userId,
-            fullname: this.fullname,
+            fullName: this.fullName,
             email: this.email,
             password: this.password
         }
     }
 
-    static createFromDetails(fullname = '', email = '') {
+    static createFromDetails(fullName = '', email = '') {
         return new User(
             uuid(),
-            fullname,
+            fullName,
             email
         )
     }
 
     static createFromObject(userObj) {
         return new User(
-            userObj.userid,
-            userObj.fullname,
+            userObj.userId,
+            userObj.fullName,
             userObj.email
         );
     }
