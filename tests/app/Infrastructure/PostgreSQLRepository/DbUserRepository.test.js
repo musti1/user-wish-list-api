@@ -6,7 +6,7 @@ const email = 'admin@test.com';
 const password = 'test123';
 
 describe('DbUser Repository Test', () => {
-    it('findAll()', async () => {
+    it.only('findAll()', async () => {
         const response = await UserRepository.findAll();
         console.log(response);
     });
