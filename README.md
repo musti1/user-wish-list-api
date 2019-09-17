@@ -1,6 +1,5 @@
 # User Product Wish List Api
-This project is build in Javascript (NodeJs). Using Domain Driven Design Pattern And Postgres as Database.
-
+This project is build in Javascript (NodeJs). Using Domain Driven Design Pattern And Postgres as Database. It is a basic backend project to store and retrieve products, wishlist and user info. 
 # Available Scripts
 In the project directory, you can run:
 
